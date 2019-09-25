@@ -7,6 +7,7 @@ program main
     integer :: myid,numprocs,ierr,tag1,tag2
     integer :: statusmpi(MPI_STATUS_SIZE)
     integer :: request !like ierr no need for inital set
+    logical :: flag
 
     call MPI_INIT(ierr)
     call MPI_COMM_RANK(MPI_COMM_WORLD,myid,ierr)
@@ -17,23 +18,23 @@ program main
     if(myid==0)then
         call MPI_ISEND(a(1),n,MPI_DOUBLE_PRECISION,1,tag1,MPI_COMM_WORLD,request,ierr)
         !call MPI_ISEND(b(1),n,MPI_DOUBLE_PRECISION,1,tag2,MPI_COMM_WORLD,request,ierr)
-    end if
-    if(myid==1)then
-        call MPI_IRECV(b(1),n,MPI_DOUBLE_PRECISION,0,tag1,MPI_COMM_WORLD,request,ierr)
-        !call MPI_IRECV(a(1),n,MPI_DOUBLE_PRECISION,0,tag2,MPI_COMM_WORLD,request,ierr)
-        call sleep(2)
         call MPI_WAIT(request,statusmpi,ierr)
     end if
 
+    call MPI_BARRIER(MPI_COMM_WORLD,ierr)
+
     if(myid==1)then
-        write(*,*) "total ranks: ",numprocs
-        write(*,*) "the array b in rank ",myid
-        write(*,*) b
+        call MPI_IPROBE(0,tag1,MPI_COMM_WORLD,flag,statusmpi,ierr)
+        write(*,*) flag
+        if(flag)then
+            call MPI_IRECV(b(1),n,MPI_DOUBLE_PRECISION,0,tag1,MPI_COMM_WORLD,request,ierr)
+            !call MPI_IRECV(a(1),n,MPI_DOUBLE_PRECISION,0,tag2,MPI_COMM_WORLD,request,ierr)
+            call MPI_WAIT(request,statusmpi,ierr)
+            write(*,*) "total ranks: ",numprocs
+            write(*,*) "the array b in rank ",myid
+            write(*,*) b
+        end if
     end if
 
     call MPI_FINALIZE(ierr)
 end program main
-
-
-
-

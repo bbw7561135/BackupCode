@@ -1,0 +1,6 @@
+seat 1
+chinese 23english 34math 55
+seat 2
+chinese 23english 45math656
+seat 3
+chinese 34english 54math  5

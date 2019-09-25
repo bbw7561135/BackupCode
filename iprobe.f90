@@ -25,8 +25,8 @@ program main
         call MPI_PROBE(0,tag1,MPI_COMM_WORLD,statusmpi,ierr)
         !call MPI_PROBE(MPI_ANY_SOURCE,MPI_ANY_TAG,MPI_COMM_WORLD,statusmpi,ierr)
         write(*,*) statusmpi(MPI_SOURCE)
- !       call MPI_IPROBE(0,tag1,MPI_COMM_WORLD,flag,statusmpi,ierr)
-!        write(*,*) flag
+        call MPI_IPROBE(0,tag1,MPI_COMM_WORLD,flag,statusmpi,ierr)
+        write(*,*) flag
         if(statusmpi(MPI_SOURCE)==0)then
             call MPI_IRECV(b(1),n,MPI_DOUBLE_PRECISION,0,tag1,MPI_COMM_WORLD,request,ierr)
             !call MPI_IRECV(a(1),n,MPI_DOUBLE_PRECISION,0,tag2,MPI_COMM_WORLD,request,ierr)
